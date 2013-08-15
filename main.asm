@@ -5,7 +5,7 @@
 main:
 ;entry point
   mov ax,0x0000
-  mov ds,ax ;set segment register. we're not actually using it haha
+  mov ds,ax ;set segment register
 
   %include "kernel.asm"
 
