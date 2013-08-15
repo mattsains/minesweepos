@@ -8,15 +8,7 @@ printstr:
     or al,al ;is AL zero?
       jz .break
     call printchar
-    
-    cmp word [xpos],0x50
-    jne .skip
-      mov word [xpos],0
-      inc word [ypos]
-    jmp .nextchar
-    .skip:
-      inc word [xpos]
-    jmp .nextchar
+  jmp .nextchar
   
   .break:
   ret
@@ -41,10 +33,14 @@ clearscreen:
     inc bx
     jmp .loop
   .end:
+  call resetcursor
 ret
 
-;prints a single character
+;prints a single character. character is in ax
 printchar:
+  cmp ax,0xA ;new line
+    je .nl
+    
   mov bx,0xb800
   mov es,bx
   
@@ -54,5 +50,17 @@ printchar:
   imul bx,0x2
   add ax,0x0700;white on black
   mov [es:bx], ax
+  ;advance cursor
+  cmp word [xpos],0x50
+    jne .skip
+      mov word [xpos],0
+      inc word [ypos]
+    ret
+    .skip:
+      inc word [xpos]
+    ret
+.nl:
+  mov word [xpos],0
+  add word [ypos],1
 ret
   

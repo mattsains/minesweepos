@@ -12,6 +12,7 @@ main:
   jmp $ ; jump here (infinite)
 
 %include "video.asm"
+%include "types.asm"
 
 times 510-($-$$) db 0 ; 510-(here-7c00)
 dw 0xAA55 ;boot signature
