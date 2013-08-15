@@ -8,26 +8,51 @@ printstr:
     or al,al ;is AL zero?
       jz .break
     call printchar
-    add byte [cursor],0x1
-  jmp .nextchar
+    
+    cmp word [xpos],0x50
+    jne .skip
+      mov word [xpos],0
+      inc word [ypos]
+    jmp .nextchar
+    .skip:
+      inc word [xpos]
+    jmp .nextchar
   
   .break:
   ret
 
 ;sets the print cursor to start
 resetcursor:
-  mov byte [cursor], 0x0
+  mov word [xpos],0
+  mov word [ypos],0
 ret
-cursor dw 0
+xpos dw 0
+ypos dw 0
 
+clearscreen:
+  mov bx,0xb800
+  mov es,bx
+  xor bx,bx
+  .loop:
+    cmp bx,0xfa0;end of screen
+    je .end
+    
+    mov word [es:bx],0
+    inc bx
+    jmp .loop
+  .end:
+ret
+
+;prints a single character
 printchar:
   mov bx,0xb800
   mov es,bx
   
-  xor bx,bx
-  mov bx,[cursor]
+  xor bx,[ypos]
+  imul bx,0x50
+  add bx,[xpos]
   imul bx,0x2
-  add ax,0x2a00
+  add ax,0x0700;white on block
   mov [es:bx], ax
 ret
   
