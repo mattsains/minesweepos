@@ -1,6 +1,7 @@
 ;Writes a string starting from [SI]
 ; and ending with 0
 printstr:
+  push ax
   call resetcursor
   .nextchar:
     xor ax,ax
@@ -11,6 +12,7 @@ printstr:
   jmp .nextchar
   
   .break:
+  pop ax
   ret
 
 ;sets the print cursor to start
@@ -22,6 +24,7 @@ xpos dw 0
 ypos dw 0
 
 clearscreen:
+  push bx
   mov bx,0xb800
   mov es,bx
   xor bx,bx
@@ -34,20 +37,23 @@ clearscreen:
     jmp .loop
   .end:
   call resetcursor
+  pop bx
 ret
 
 ;prints a single character. character is in ax
 printchar:
+  push bx
+  push ax
   cmp ax,0xA ;new line
     je .nl
     
   mov bx,0xb800
   mov es,bx
   
-  xor bx,[ypos]
+  mov bx,[ypos]
   imul bx,0x50
   add bx,[xpos]
-  imul bx,0x2
+  shl bx,1
   add ax,0x0700;white on black
   mov [es:bx], ax
   ;advance cursor
@@ -55,12 +61,15 @@ printchar:
     jne .skip
       mov word [xpos],0
       inc word [ypos]
-    ret
+    jmp .end
     .skip:
       inc word [xpos]
-    ret
+    jmp .end
 .nl:
   mov word [xpos],0
   add word [ypos],1
+.end:
+pop ax
+pop bx
 ret
   
