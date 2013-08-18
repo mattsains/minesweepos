@@ -13,7 +13,7 @@ printstr:
   
   .break:
   pop ax
-  ret
+ret
 
 ;sets the print cursor to start
 resetcursor:

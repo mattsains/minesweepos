@@ -13,7 +13,7 @@ main:
 
 %include "video.asm"
 %include "types.asm"
-
+data:
 times 510-($-$$) db 0 ; 510-(here-7c00)
 dw 0xAA55 ;boot signature
 
