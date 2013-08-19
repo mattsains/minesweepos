@@ -10,8 +10,8 @@ int_to_str:
   push bx;not really necessary but let's make this function isolated
   push cx
   push dx
-  push 0; hack to end the string with a term
   call int_to_str_rec
+  mov byte [bx], 0x00 ;zero termination
   pop dx
   pop cx
   pop bx
@@ -32,6 +32,6 @@ int_to_str_rec:
   .break:
   pop cx ;get the next remainder into cx
   call digit_to_str;now ax is the ascii of cx
-  mov [bx],ax ;store ascii in the next position in string
+  mov [bx],al ;store ascii in the next position in string
   inc bx ;get ready for the next one which will happen when we drop recursive levels
 ret
