@@ -2,7 +2,6 @@
 ; and ending with 0
 printstr:
   push ax
-  call resetcursor
   .nextchar:
     xor ax,ax
     lodsb ;loads next [SI] into AL
@@ -17,9 +16,16 @@ ret
 
 ;sets the print cursor to start
 resetcursor:
-  mov word [xpos],0
-  mov word [ypos],0
+  mov byte [xpos],0
+  mov byte [ypos],0
 ret
+
+;puts the cursor on the next line
+newline:
+  mov byte [xpos],0
+  add byte [ypos],1
+ret
+
 xpos dw 0
 ypos dw 0
 
