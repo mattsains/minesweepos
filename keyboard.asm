@@ -32,13 +32,8 @@ isr_key: ; IRQ 1 -> interrupt 9
   mov ah,al
   and al, 0x80
    jnz .end
-  shr ax, 8
-  mov bx, data
-  call int_to_str
-  mov si,data
-  call printstr
-  mov si,kb_press
-  call printstr
+  mov al, ah
+
  .end:
   mov al, 0x61
   out 0x20, al;reset interrupt
@@ -46,6 +41,5 @@ isr_key: ; IRQ 1 -> interrupt 9
   pop bx
   pop ax
 iret
-kb_press db "keywashgfhgfhgfhfggfpressed",10,0
 kb_broken db "PS/2 keyboard appears broken",10,0
 kb_not_found db "No PS/2 keyboard was found",10,0

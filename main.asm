@@ -19,6 +19,7 @@ main: ;entry point
 %include "video.asm"
 %include "keyboard.asm"
 %include "types.asm"
+%include "minesweep.asm"
 
 data: ;place for variables
 times 510-($-$$) db 0 ; 510-(here-7c00)
