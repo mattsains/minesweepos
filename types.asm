@@ -37,7 +37,9 @@ int_to_str_rec:
 ret
 
 ;generates a random number between ax and cx, stores it in ax
+;couldn't deal with all the stack stuff going on so this probably needs a rewrite
 rand:
+  push bx
   push dx
   push cx
   
@@ -55,4 +57,5 @@ rand:
   pop cx
   mov ax,dx
   pop dx
+  pop bx
 ret
