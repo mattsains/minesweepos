@@ -25,7 +25,6 @@ key_init: ;initialized keyboard input
 ret
 
 isr_key: ; IRQ 1 -> interrupt 9
-  xchg bx,bx
   push ax
   push bx
   push si
@@ -47,6 +46,6 @@ isr_key: ; IRQ 1 -> interrupt 9
   pop bx
   pop ax
 iret
-kb_press db " key was pressed",10,0
+kb_press db "keywashgfhgfhgfhfggfpressed",10,0
 kb_broken db "PS/2 keyboard appears broken",10,0
 kb_not_found db "No PS/2 keyboard was found",10,0
