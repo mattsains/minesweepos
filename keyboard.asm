@@ -1,8 +1,9 @@
 key_init: ;initialized keyboard input
-    mov [0x24],ds
-    mov word [0x26],isr_key
+    mov [0x26],ds
+    mov word [0x24],isr_key
     push ax
-    ;TODO: force a basic assurance test for virtual machine compatibility
+    mov al, 0xaa
+    out 0x64, al ;force a keyboard test (needed for VM)
     in al,0x64 ;kb status reg
     and al,0xB4 ;masks errors
     xor al,0x14 ;flip bits which are the wrong way round for jz
@@ -13,20 +14,39 @@ key_init: ;initialized keyboard input
       jmp $
     .checkexists:
     in al,0x64
-    and al,0x40;checks for timeout=>no kb
+    and al,0x40 ;checks for timeout=>no kb
      jz .end
       call clearscreen
       mov si,kb_not_found
       call printstr
       jmp $
 .end:
+    pop ax
 ret
 
-isr_key: ;interrupt 9
-pusha
+isr_key: ; IRQ 1 -> interrupt 9
+  xchg bx,bx
+  push ax
+  push bx
+  push si
   in al, 0x60
-popa
+  mov ah,al
+  and al, 0x80
+   jnz .end
+  shr ax, 8
+  mov bx, data
+  call int_to_str
+  mov si,data
+  call printstr
+  mov si,kb_press
+  call printstr
+ .end:
+  mov al, 0x61
+  out 0x20, al;reset interrupt
+  pop si
+  pop bx
+  pop ax
 iret
-
+kb_press db " key was pressed",10,0
 kb_broken db "PS/2 keyboard appears broken",10,0
 kb_not_found db "No PS/2 keyboard was found",10,0
