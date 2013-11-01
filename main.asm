@@ -36,3 +36,4 @@ section .text
 
   ;I think I'll put libraries here
   %include "video.asm"
+  %include "mines.asm"
