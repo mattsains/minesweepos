@@ -1,29 +1,35 @@
-[BITS 16]    ; generate 16bit opcode
+;multiboot stuff
+MBALIGN   equ 1<<0
+MEMINFO   equ 1<<1
+FLAGS     equ MBALIGN | MEMINFO
+MAGIC     equ 0x1BADB002
+CHECKSUM  equ -(MAGIC + FLAGS)
 
-[ORG 0x7c00] ; where are we in memory?
-
-main: ;entry point
-  mov ax,0x0000
-  mov ds,ax ;set segment register
+section .multiboot
+align 4
+  dd MAGIC
+  dd FLAGS
+  dd CHECKSUM
   
-  ;call some initialization functions (eg interrupt setters)
-  cli
-    call key_init ;keyboard
-  sti
-  
-  ;kernel begins here
-  %include "kernel.asm"
+;start a stack going
+section .bootstrap_stack
+align 4
+  stack_bottom:
+    times 16384 db 0
+  stack_top:
 
-  jmp $ ; jump here (infinite)
+;aaand code
+section .text
+  global _start
+  _start:
+    ;main entry point for the program
+    mov esp, stack_top ; set up that stack
+    
+    ;code here
+    
+    cli
+    .hang:
+      hlt
+    jmp .hang
 
-%include "video.asm"
-%include "keyboard.asm"
-%include "types.asm"
-%include "minesweep.asm"
-
-data: ;place for variables
-times 510-($-$$) db 0 ; 510-(here-7c00)
-dw 0xAA55 ;boot signature
-
-;padding for floppy
-times 1474048 db 0
+  ;I think I'll put libraries here
