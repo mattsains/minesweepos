@@ -24,8 +24,10 @@ section .text
   _start:
     ;main entry point for the program
     mov esp, stack_top ; set up that stack
+    xchg bx, bx ;magic breakpoint for debug
     
     ;code here
+    call clearscreen
     
     cli
     .hang:
@@ -33,3 +35,4 @@ section .text
     jmp .hang
 
   ;I think I'll put libraries here
+  %include "video.asm"
