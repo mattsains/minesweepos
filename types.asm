@@ -26,12 +26,12 @@ _int_to_str:
     div ecx
   pop ecx
   ;dl is the digit to be processed when recursion completes
-  push dl
+  push dx
   and eax, eax ;recurse unless there is nothing left to divide
     jz .break
     call _int_to_str
   .break:
-  pop cl
+  pop cx
   call digit_to_char
   mov [ebx], al
   inc ebx
